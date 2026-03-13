@@ -364,7 +364,7 @@ proc cr_bd_design_1 { parentCell } {
   ##################################################################
   set bCheckIPs 1
   if { $bCheckIPs == 1 } {
-     set list_check_ips "\ 
+     set list_check_ips "\
   xilinx.com:hls:Conv2D_HW:1.0\
   xilinx.com:ip:processing_system7:5.5\
   xilinx.com:ip:proc_sys_reset:5.0\
@@ -1029,23 +1029,23 @@ pagesize -pg 1 -db -bbox -sgen -20 -340 1330 300
 
   validate_bd_design
   save_bd_design
-  close_bd_design $design_name 
+  close_bd_design $design_name
 }
 # End of cr_bd_design_1()
 cr_bd_design_1 ""
-set_property EXCLUDE_DEBUG_LOGIC "0" [get_files design_1.bd ] 
-set_property GENERATE_SYNTH_CHECKPOINT "1" [get_files design_1.bd ] 
-set_property IS_ENABLED "1" [get_files design_1.bd ] 
-set_property IS_GLOBAL_INCLUDE "0" [get_files design_1.bd ] 
-set_property LIBRARY "xil_defaultlib" [get_files design_1.bd ] 
-set_property PATH_MODE "RelativeFirst" [get_files design_1.bd ] 
-set_property PFM_NAME "" [get_files design_1.bd ] 
-set_property REGISTERED_WITH_MANAGER "1" [get_files design_1.bd ] 
-set_property SYNTH_CHECKPOINT_MODE "Hierarchical" [get_files design_1.bd ] 
-set_property USED_IN "synthesis implementation simulation" [get_files design_1.bd ] 
-set_property USED_IN_IMPLEMENTATION "1" [get_files design_1.bd ] 
-set_property USED_IN_SIMULATION "1" [get_files design_1.bd ] 
-set_property USED_IN_SYNTHESIS "1" [get_files design_1.bd ] 
+set_property EXCLUDE_DEBUG_LOGIC "0" [get_files design_1.bd ]
+set_property GENERATE_SYNTH_CHECKPOINT "1" [get_files design_1.bd ]
+set_property IS_ENABLED "1" [get_files design_1.bd ]
+set_property IS_GLOBAL_INCLUDE "0" [get_files design_1.bd ]
+set_property LIBRARY "xil_defaultlib" [get_files design_1.bd ]
+set_property PATH_MODE "RelativeFirst" [get_files design_1.bd ]
+set_property PFM_NAME "" [get_files design_1.bd ]
+set_property REGISTERED_WITH_MANAGER "1" [get_files design_1.bd ]
+set_property SYNTH_CHECKPOINT_MODE "Hierarchical" [get_files design_1.bd ]
+set_property USED_IN "synthesis implementation simulation" [get_files design_1.bd ]
+set_property USED_IN_IMPLEMENTATION "1" [get_files design_1.bd ]
+set_property USED_IN_SIMULATION "1" [get_files design_1.bd ]
+set_property USED_IN_SYNTHESIS "1" [get_files design_1.bd ]
 
 # --- Deterministic BD + VHDL wrapper generation ---
 
@@ -1802,3 +1802,38 @@ move_dashboard_gadget -name {drc_1} -row 2 -col 0
 move_dashboard_gadget -name {timing_1} -row 0 -col 1
 move_dashboard_gadget -name {utilization_2} -row 1 -col 1
 move_dashboard_gadget -name {methodology_1} -row 2 -col 1
+
+# -------------------------------------------------------------------------
+# Launch Synthesis, Implementation, and Bitstream Generation
+# (only when --build_bitstream flag is passed)
+# -------------------------------------------------------------------------
+if { $build_bitstream == 1 } {
+  puts "INFO: Launching synthesis run 'synth_1'..."
+  launch_runs synth_1 -jobs 4
+  wait_on_run synth_1
+  if {[get_property PROGRESS [get_runs synth_1]] != "100%"} {
+    error "ERROR: Synthesis failed. Check the synthesis log for details."
+  }
+  puts "INFO: Synthesis complete."
+
+  puts "INFO: Launching implementation run 'impl_1'..."
+  launch_runs impl_1 -jobs 4
+  wait_on_run impl_1
+  if {[get_property PROGRESS [get_runs impl_1]] != "100%"} {
+    error "ERROR: Implementation failed. Check the implementation log for details."
+  }
+  puts "INFO: Implementation complete."
+
+  puts "INFO: Generating bitstream..."
+  launch_runs impl_1 -to_step write_bitstream -jobs 4
+  wait_on_run impl_1
+  if {[get_property PROGRESS [get_runs impl_1]] != "100%"} {
+    error "ERROR: Bitstream generation failed."
+  }
+  puts "INFO: Bitstream generation complete."
+  puts "INFO: Bitstream located at: [get_property DIRECTORY [get_runs impl_1]]/${_xil_proj_name_}.bit"
+} else {
+  puts "INFO: Project created successfully. To run synthesis through bitstream generation,"
+  puts "INFO: re-source this script with the '--build_bitstream' flag:"
+  puts "INFO:   vivado -mode batch -source midterm_vivado.tcl -tclargs --build_bitstream"
+}
