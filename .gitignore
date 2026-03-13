@@ -12,6 +12,6 @@
 
 # Keep sources and constraints ip_user_files
 !HLS/
-!SW_TESTBENCH_ONLY_CONV_SW_AND_HW/
+!SW/
 !HLS/**
-!SW_TESTBENCH_ONLY_CONV_SW_AND_HW/**
+!SW/**
