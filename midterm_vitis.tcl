@@ -24,5 +24,21 @@ if { $RUN_CSIM } {
 }
 
 csynth_design
+
+# Export as ip_catalog: Vitis HLS writes a .zip (named after the top function) into ./IP
 export_design -rtl verilog -format ip_catalog -output ./IP
+
+# Unzip the exported archive so Vivado can find component.xml directly in ./IP.
+# Without this step, Vivado's ip_repo_paths sees an empty/zip-only folder and fails.
+set ip_zips [glob -nocomplain "./IP/*.zip"]
+if { [llength $ip_zips] == 0 } {
+    puts "ERROR: No .zip found in ./IP after export_design. Cannot continue."
+    exit 1
+}
+foreach zip_file $ip_zips {
+    puts "INFO: Extracting IP archive: $zip_file"
+    exec unzip -o $zip_file -d ./IP
+}
+puts "INFO: IP extracted. Vivado will find component.xml in ./IP"
+
 exit

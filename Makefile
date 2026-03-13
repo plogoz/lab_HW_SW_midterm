@@ -22,6 +22,7 @@ help:
 check_tools:
 	@test -x "$(VITIS_HLS_BIN)" || (echo "ERROR: VITIS_HLS_BIN not executable: $(VITIS_HLS_BIN)"; exit 1)
 	@test -x "$(VIVADO_BIN)"    || (echo "ERROR: VIVADO_BIN not executable: $(VIVADO_BIN)"; exit 1)
+	@command -v unzip >/dev/null 2>&1 || (echo "ERROR: 'unzip' not found in PATH. Please install it."; exit 1)
 
 # Step 1a: Generate IP without simulation (default)
 ip: CSIM=0
@@ -31,11 +32,15 @@ ip: IP/component.xml
 ip_sim: CSIM=1
 ip_sim: IP/component.xml
 
+# Vitis HLS exports the IP as a .zip archive inside ./IP.
+# The TCL script (midterm_vitis.tcl) runs unzip after export_design so that
+# Vivado can find component.xml directly under ./IP via ip_repo_paths.
 IP/component.xml: HLS/conv2d.cpp HLS/conv2d.h $(PROJECT_NAME)_vitis.tcl | check_tools
 	@echo "Running Vitis HLS... (CSIM=$(CSIM))"
 	rm -rf $(PROJECT_NAME)_vitis IP
 	mkdir -p IP
 	"$(VITIS_HLS_BIN)" -f $(PROJECT_NAME)_vitis.tcl -tclargs $(CSIM)
+	@test -f IP/component.xml || (echo "ERROR: IP/component.xml not found after Vitis HLS run. Check vitis_hls.log for errors."; exit 1)
 
 # Step 2: Create Vivado Project
 vivado_project: $(PROJECT_NAME)_vivado/$(PROJECT_NAME)_vivado.xpr
