@@ -1,17 +1,25 @@
 MAKEFLAGS += " -j2 "
-CFLAGS=-O3 -Wall
+CFLAGS=-O3 -Wall -Isrc
 
 all: obj cnnSolver
 
-cnnSolver: obj/cnnSolver.o obj/model.o obj/cnn.o
-	g++ $(CFLAGS) obj/cnnSolver.o obj/model.o obj/cnn.o -o cnnSolver -lm
+cnnSolver: obj/cnnSolver.o obj/model.o obj/cnn.o obj/CAccelProxy.o obj/CConv2DProxy.o
+	g++ $(CFLAGS) obj/cnnSolver.o obj/model.o obj/cnn.o obj/CAccelProxy.o obj/CConv2DProxy.o -o cnnSolver -lm
 
 obj/cnnSolver.o: src/cnnSolver.cpp src/model.h src/cnn.h
 	g++ -c $(CFLAGS) src/cnnSolver.cpp -o obj/cnnSolver.o
+
 obj/model.o: src/model.cpp src/model.h src/cnn.h
 	g++ -c $(CFLAGS) src/model.cpp -o obj/model.o
+
 obj/cnn.o: src/cnn.cpp src/cnn.h
 	g++ -c $(CFLAGS) src/cnn.cpp -o obj/cnn.o
+
+obj/CAccelProxy.o: src/CAccelProxy.cpp src/CAccelProxy.hpp
+	g++ -c $(CFLAGS) src/CAccelProxy.cpp -o obj/CAccelProxy.o
+
+obj/CConv2DProxy.o: src/CConv2DProxy.cpp src/CConv2DProxy.hpp src/CAccelProxy.hpp
+	g++ -c $(CFLAGS) src/CConv2DProxy.cpp -o obj/CConv2DProxy.o
 
 obj:
 	mkdir obj/
@@ -19,4 +27,3 @@ obj:
 clean:
 	rm -f cnnSolver
 	rm -rf obj/
-

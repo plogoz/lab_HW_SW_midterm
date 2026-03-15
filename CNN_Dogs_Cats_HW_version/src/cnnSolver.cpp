@@ -1,10 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <stdint.h>
 #include <inttypes.h>
 
 #include "model.h"
+#include "cnn.h"
+#include "CConv2DProxy.hpp"
 
 const uint32_t INPUT_SIZE = (256*256*3);
 
@@ -17,6 +18,8 @@ TFXP inputImageFxp[INPUT_SIZE];  // RGB planar data, converted to [0, 1] in FxP.
 
 TFXP buffer0[4129024], buffer1[1032256];  // Ping-pong buffer for activations.
 
+CConv2DProxy convolver;
+
 void InitTimes(TTimes & times);
 void PrintTimes(TTimes & times, uint32_t numLayers);
 
@@ -27,26 +30,26 @@ int main(int argc, char ** argv)
     return -1;
   }
 
-  if (!LoadModelInFxP(weights, biases)) {
+  if (!LoadModelInFxP(convolver, weights, biases)) {
     printf("Error loading the CNN model and converting to FxP!\n");
     return -1;
   }
 
   if (!LoadImageInFxp(argv[1], inputImageFxp, inputImage, INPUT_SIZE)) {
     printf("Error loading the image file.\n");
-    FreeParams(NUM_LAYERS, (void**)weights);
-    FreeParams(NUM_LAYERS, (void**)biases);
+    FreeParams(convolver, NUM_LAYERS, (void**)weights);
+    FreeParams(convolver, NUM_LAYERS, (void**)biases);
     return -1;
   }
 
   InitTimes(times);
-  TFXP finalPrediction = Inference(inputImageFxp, buffer0, buffer1, weights, biases, times);
+  TFXP finalPrediction = Inference(convolver, inputImageFxp, buffer0, buffer1, weights, biases, times);
   printf("OUTPUT: %0.8lf --> %s\n", Fxp2Float(finalPrediction, DECIMALS),
     Fxp2Float(finalPrediction) < 0.5 ? "CAT" : "DOG");
   PrintTimes(times, NUM_LAYERS);
 
-  FreeParams(NUM_LAYERS, (void**)weights);
-  FreeParams(NUM_LAYERS, (void**)biases);
+  FreeParams(convolver, NUM_LAYERS, (void**)weights);
+  FreeParams(convolver, NUM_LAYERS, (void**)biases);
 
   return Fxp2Float(finalPrediction) < 0.5 ? 0 : 1;;
 }
@@ -98,11 +101,4 @@ void PrintTimes(TTimes & times, uint32_t numLayers)
 
   printf("Total time: %" PRIu64 " ns (%0.3lf s) %0.1lf %%\n", (uint64_t)totalTime, totalTime/1e9, (totalTime/totalTime)*100); // :-)
 
-
-
-
-
-
-
 }
-

@@ -1,6 +1,9 @@
 #ifndef CNN_H
 #define CNN_H
 
+#include <stdint.h>
+#include "model.h"
+
 void MaxPool(TFXP * input, TFXP * output, uint32_t channels, uint32_t width, uint32_t height);
 void ReLU(TFXP * input, uint32_t channels, uint32_t width, uint32_t height);
 void Sigmoid(TFXP * input, uint32_t numParams);
