@@ -1,4 +1,4 @@
-.PHONY: ip ip_sim vivado_project clean help check_tools
+.PHONY: ip ip_sim vivado clean help check_tools
 
 PROJECT_NAME := midterm
 
@@ -36,7 +36,7 @@ help:
 	@echo "MAKEFILE targets:"
 	@echo "  ip             - Build/export IP (no C simulation)"
 	@echo "  ip_sim         - Build/export IP with C simulation"
-	@echo "  vivado_project - Creates the Vivado block design + runs synth, impl & bitstream"
+	@echo "  vivado - Creates the Vivado block design + runs synth, impl & bitstream"
 	@echo "  clean          - Removes generated projects, IP folders, and logs"
 	@echo ""
 	@echo "Tool overrides:"
@@ -63,12 +63,14 @@ IP/component.xml: HLS/conv2d.cpp HLS/conv2d.h $(PROJECT_NAME)_vitis.tcl | check_
 	rm -rf $(PROJECT_NAME)_vitis IP
 	mkdir -p IP
 	"$(VITIS_HLS_BIN)" -f $(PROJECT_NAME)_vitis.tcl -tclargs $(CSIM)
-	# @test -f IP/component.xml || (echo "ERROR: IP/component.xml not found after Vitis HLS run. Check vitis_hls.log for errors."; exit 1)
+	@echo "Unzipping IP files..."
+	cd IP && unzip -o export.zip && cd ..
+	@test -f IP/component.xml || (echo "ERROR: IP/component.xml not found after Vitis HLS run. Check vitis_hls.log for errors."; exit 1)
 
 # Step 2: Create Vivado Project, run synthesis, implementation, and generate bitstream
 BITSTREAM := $(PROJECT_NAME)_vivado/$(PROJECT_NAME)_vivado.runs/impl_1/design_1_wrapper.bit
 
-vivado_project: $(BITSTREAM)
+vivado: $(BITSTREAM)
 
 $(BITSTREAM): IP/component.xml $(PROJECT_NAME)_vivado.tcl | check_tools
 	@echo "Reconstructing Vivado project and running full build flow..."
@@ -76,9 +78,13 @@ $(BITSTREAM): IP/component.xml $(PROJECT_NAME)_vivado.tcl | check_tools
 	"$(VIVADO_BIN)" -mode batch -source $(PROJECT_NAME)_vivado.tcl
 	@test -f $@ || (echo "ERROR: Bitstream not found at $@. Check vivado*.log for details."; exit 1)
 	@echo "SUCCESS: Bitstream generated at $@"
+	@echo "Copying HWH files to root folder..."
+	# @cp design_1_wrapper.bit $(PROJECT_NAME).bit
+	@find $(PROJECT_NAME)_vivado -name "design_1.hwh" -exec cp {} $(PROJECT_NAME).hwh \; || (echo "WARNING: HWH file not found"; true)
+	@echo "INFO: Bitstream and HWH files ready: $(PROJECT_NAME).bit and $(PROJECT_NAME).hwh"
 
 # Step 3: Clean workspace
 clean:
 	@echo "Cleaning up generated files..."
-	rm -rf $(PROJECT_NAME)_vitis $(PROJECT_NAME)_vivado IP .Xil
+	rm -rf $(PROJECT_NAME)_vitis $(PROJECT_NAME)_vivado IP .Xil NA
 	rm -f vivado*.jou vivado*.log vivado*.str vitis_hls.log

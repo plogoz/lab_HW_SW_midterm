@@ -8,4 +8,4 @@
 | Name | Description | Time (ms) | Frequency (MHz) | LUTs | FFs | BRAMs | DSPs | Cost | Pareto ? (Yes / No) |
 |-----------------|-----------------|---------|---------|---------|---------|---------|---------|---------|---------|
 | SW | SW only on PYNQ | x | x | n/a | n/a | n/a | n/a | 0 | Yes |
-| HW | without optimization | x | x | n/a | n/a | n/a | n/a | 0 | No |
+| HW | without optimization | 87.635 | 100 | n/a | n/a | n/a | n/a | 0 | No |

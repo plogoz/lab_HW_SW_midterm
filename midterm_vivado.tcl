@@ -358,7 +358,7 @@ proc cr_bd_design_1 { parentCell } {
   ##################################################################
   set bCheckIPs 1
   if { $bCheckIPs == 1 } {
-     set list_check_ips "\ 
+     set list_check_ips "\
   xilinx.com:hls:Conv2D_HW:1.0\
   xilinx.com:ip:processing_system7:5.5\
   xilinx.com:ip:proc_sys_reset:5.0\
@@ -1023,23 +1023,23 @@ pagesize -pg 1 -db -bbox -sgen -30 -350 1320 300
 
   validate_bd_design
   save_bd_design
-  close_bd_design $design_name 
+  close_bd_design $design_name
 }
 # End of cr_bd_design_1()
 cr_bd_design_1 ""
-set_property EXCLUDE_DEBUG_LOGIC "0" [get_files design_1.bd ] 
-set_property GENERATE_SYNTH_CHECKPOINT "1" [get_files design_1.bd ] 
-set_property IS_ENABLED "1" [get_files design_1.bd ] 
-set_property IS_GLOBAL_INCLUDE "0" [get_files design_1.bd ] 
-set_property LIBRARY "xil_defaultlib" [get_files design_1.bd ] 
-set_property PATH_MODE "RelativeFirst" [get_files design_1.bd ] 
-set_property PFM_NAME "" [get_files design_1.bd ] 
-set_property REGISTERED_WITH_MANAGER "1" [get_files design_1.bd ] 
-set_property SYNTH_CHECKPOINT_MODE "Hierarchical" [get_files design_1.bd ] 
-set_property USED_IN "synthesis implementation simulation" [get_files design_1.bd ] 
-set_property USED_IN_IMPLEMENTATION "1" [get_files design_1.bd ] 
-set_property USED_IN_SIMULATION "1" [get_files design_1.bd ] 
-set_property USED_IN_SYNTHESIS "1" [get_files design_1.bd ] 
+set_property EXCLUDE_DEBUG_LOGIC "0" [get_files design_1.bd ]
+set_property GENERATE_SYNTH_CHECKPOINT "1" [get_files design_1.bd ]
+set_property IS_ENABLED "1" [get_files design_1.bd ]
+set_property IS_GLOBAL_INCLUDE "0" [get_files design_1.bd ]
+set_property LIBRARY "xil_defaultlib" [get_files design_1.bd ]
+set_property PATH_MODE "RelativeFirst" [get_files design_1.bd ]
+set_property PFM_NAME "" [get_files design_1.bd ]
+set_property REGISTERED_WITH_MANAGER "1" [get_files design_1.bd ]
+set_property SYNTH_CHECKPOINT_MODE "Hierarchical" [get_files design_1.bd ]
+set_property USED_IN "synthesis implementation simulation" [get_files design_1.bd ]
+set_property USED_IN_IMPLEMENTATION "1" [get_files design_1.bd ]
+set_property USED_IN_SIMULATION "1" [get_files design_1.bd ]
+set_property USED_IN_SYNTHESIS "1" [get_files design_1.bd ]
 
 #call make_wrapper to create wrapper files
 if { [get_property IS_LOCKED [ get_files -norecurse design_1.bd] ] == 1  } {
@@ -1822,7 +1822,7 @@ puts "INFO: Bitstream generation completed successfully."
 # Copy the bitstream to the root (next to this script)
 set bitstream_dir [get_property DIRECTORY [get_runs impl_1]]
 set bitstream_src "${bitstream_dir}/design_1_wrapper.bit"
-set bitstream_dst "${origin_dir}/design_1_wrapper.bit"
+set bitstream_dst "${origin_dir}/midterm.bit"
 
 if {[file exists $bitstream_src]} {
   file copy -force $bitstream_src $bitstream_dst
@@ -1831,12 +1831,5 @@ if {[file exists $bitstream_src]} {
   error "ERROR: Expected bitstream not found at ${bitstream_src}"
 }
 
-set hwh_src "${bitstream_dir}/design_1_wrapper.hwh"
-set hwh_dst "${origin_dir}/design_1_wrapper.hwh"
-
-if {[file exists $hwh_src]} {
-  file copy -force $hwh_src $hwh_dst
-  puts "INFO: HWH file copied to: ${hwh_dst}"
-} else {
-  error "ERROR: Expected HWH file not found at ${hwh_src}"
-}
+# HWH file will be copied by the Makefile
+puts "INFO: HWH file will be copied by the Makefile post-processing step"
