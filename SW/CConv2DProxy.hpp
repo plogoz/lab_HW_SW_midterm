@@ -2,6 +2,7 @@
 #define CCONV2D_HPP
 
 #include <cstdint>
+#include "CAccelProxy.hpp"
 
 #define CONV2D_HW_ADDR  0x40000000  // From Vivado address editor
 #define MAP_SIZE        0x10000     // 64KB, covers 0x40000000 - 0x4000FFFF

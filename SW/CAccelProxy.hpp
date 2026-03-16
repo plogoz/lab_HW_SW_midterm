@@ -1,6 +1,9 @@
 #ifndef CACCELDRIVE_HPP
 #define CACCELDRIVE_HPP
 
+#include <stdint.h>
+#include <map>
+
 // Requires <map>, <stdint.h>
 
 //  This class takes care of the low-level configuration of addresses.

@@ -14,9 +14,9 @@ TFXP * biases[NUM_LAYERS];
 TTimes times;
 
 uint8_t inputImage[INPUT_SIZE];   // RGB pixel data separated in planes.
-TFXP inputImageFxp[INPUT_SIZE];  // RGB planar data, converted to [0, 1] in FxP.
+TFXP *inputImageFxp;  // RGB planar data, converted to [0, 1] in FxP.
 
-TFXP buffer0[4129024], buffer1[1032256];  // Ping-pong buffer for activations.
+TFXP *buffer0, *buffer1;  // Ping-pong buffer for activations.
 
 CConv2DProxy convolver;
 
@@ -30,8 +30,28 @@ int main(int argc, char ** argv)
     return -1;
   }
 
+  if (convolver.Open(CONV2D_HW_ADDR, MAP_SIZE) != 0) {
+    printf("Error opening the accelerator!\n");
+    return -1;
+  }
+
+  inputImageFxp = (TFXP*)convolver.AllocDMACompatible(INPUT_SIZE * sizeof(TFXP));
+  buffer0 = (TFXP*)convolver.AllocDMACompatible(4129024 * sizeof(TFXP));
+  buffer1 = (TFXP*)convolver.AllocDMACompatible(1032256 * sizeof(TFXP));
+
+  if (inputImageFxp == NULL || buffer0 == NULL || buffer1 == NULL) {
+    printf("Error allocating DMA memory for buffers.\n");
+    if (inputImageFxp) convolver.FreeDMACompatible(inputImageFxp);
+    if (buffer0) convolver.FreeDMACompatible(buffer0);
+    if (buffer1) convolver.FreeDMACompatible(buffer1);
+    return -1;
+  }
+
   if (!LoadModelInFxP(convolver, weights, biases)) {
     printf("Error loading the CNN model and converting to FxP!\n");
+    convolver.FreeDMACompatible(buffer1);
+    convolver.FreeDMACompatible(buffer0);
+    convolver.FreeDMACompatible(inputImageFxp);
     return -1;
   }
 
@@ -39,6 +59,9 @@ int main(int argc, char ** argv)
     printf("Error loading the image file.\n");
     FreeParams(convolver, NUM_LAYERS, (void**)weights);
     FreeParams(convolver, NUM_LAYERS, (void**)biases);
+    convolver.FreeDMACompatible(buffer1);
+    convolver.FreeDMACompatible(buffer0);
+    convolver.FreeDMACompatible(inputImageFxp);
     return -1;
   }
 
@@ -51,7 +74,11 @@ int main(int argc, char ** argv)
   FreeParams(convolver, NUM_LAYERS, (void**)weights);
   FreeParams(convolver, NUM_LAYERS, (void**)biases);
 
-  return Fxp2Float(finalPrediction) < 0.5 ? 0 : 1;;
+  convolver.FreeDMACompatible(buffer1);
+  convolver.FreeDMACompatible(buffer0);
+  convolver.FreeDMACompatible(inputImageFxp);
+
+  return Fxp2Float(finalPrediction) < 0.5 ? 0 : 1;
 }
 
 

@@ -199,6 +199,7 @@ int main(int argc, char ** argv)
       clock_gettime(CLOCK_MONOTONIC_RAW, &start);
 
       convolver.Conv2D_HW(inputHW, outputHW, coeffsHW, channels, filters, width, height, 3, 3);
+      clock_gettime(CLOCK_MONOTONIC_RAW, &end);
       elapsedTimeHW += CalcTimeDiff(end, start);
       CompareVectors(output, outputHW, currentOutputSize) ? printf("HW OK\n") : printf("HW output does NOT match SW output.\n");
     }

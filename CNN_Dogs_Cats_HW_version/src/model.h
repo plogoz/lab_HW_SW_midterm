@@ -33,19 +33,19 @@ uint64_t CalcTimeDiff(const struct timespec & time2, const struct timespec & tim
 
 bool LoadFloatWeights(const uint32_t numLayers, float ** weights);
 
-bool ConvertWeightsToFxP(CConv2DProxy convolver, const uint32_t numLayers, float ** floatWeights, TFXP ** fxpWeights);
+bool ConvertWeightsToFxP(CConv2DProxy & convolver, const uint32_t numLayers, float ** floatWeights, TFXP ** fxpWeights);
 
 bool LoadFloatBiases(const uint32_t numLayers, float ** biases);
 
-bool ConvertBiasesToFxP(CConv2DProxy convolver, const uint32_t numLayers, float ** floatBiases, TFXP ** fxpBiases);
+bool ConvertBiasesToFxP(CConv2DProxy & convolver, const uint32_t numLayers, float ** floatBiases, TFXP ** fxpBiases);
 
-void FreeParams(CConv2DProxy convolver, const uint32_t numLayers, void ** params);
+void FreeParams(CConv2DProxy & convolver, const uint32_t numLayers, void ** params);
 
-bool LoadModelInFxP(CConv2DProxy convolver, TFXP ** fxpWeights, TFXP ** fxpBiases);
+bool LoadModelInFxP(CConv2DProxy & convolver, TFXP ** fxpWeights, TFXP ** fxpBiases);
 
 bool LoadImageInFxp(const char * fileName, TFXP * inputImageFxp, uint8_t * inputImageRGB, uint32_t inputSize);
 
-TFXP Inference(CConv2DProxy convolver, TFXP * inputImageFxp, TFXP * buffer0, TFXP * buffer1, TFXP ** fxpWeights, TFXP ** fxpBiases, TTimes & times);
+TFXP Inference(CConv2DProxy & convolver, TFXP * inputImageFxp, TFXP * buffer0, TFXP * buffer1, TFXP ** fxpWeights, TFXP ** fxpBiases, TTimes & times);
 
 inline TFXP Float2Fxp(float value, uint32_t decimalBits = DECIMALS)
 {

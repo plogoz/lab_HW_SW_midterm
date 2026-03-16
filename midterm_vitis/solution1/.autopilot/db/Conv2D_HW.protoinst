@@ -1,0 +1,29 @@
+{
+	"version": "1.0",
+	"modules": {
+		"Conv2D_HW": {
+			"proto_instances": {
+				"/AESL_inst_Conv2D_HW_activity": {
+					"interface": "xilinx.com:interface:internal_hls_dataflow:1.0",
+					"ports": {
+						"AP_CLK": { "actual": "ap_clk"},
+						"AP_DONE": { "actual": "ap_done"},
+						"AP_READY": { "actual": "ap_ready"},
+						"AP_RESET": { "actual": "ap_rst_n"},
+						"AP_START": { "actual": "ap_start"}
+					}
+				},
+				"grp_Conv2D_HW_Pipeline_VITIS_LOOP_25_4_VITIS_LOOP_26_5_VITIS_LOOP_27_6_fu_205/grp_Conv2D_HW_Pipeline_VITIS_LOOP_25_4_VITIS_LOOP_26_5_VITIS_LOOP_27_6_fu_205_activity": {
+					"interface": "xilinx.com:interface:internal_hls_dataflow:1.0",
+					"ports": {
+						"AP_CLK": { "actual": "ap_clk"},
+						"AP_DONE": { "actual": "ap_done"},
+						"AP_READY": { "actual": "ap_ready"},
+						"AP_RESET": { "actual": "ap_rst"},
+						"AP_START": { "actual": "ap_start"}
+					}
+				}
+			}
+		}
+	}
+}

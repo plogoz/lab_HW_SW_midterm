@@ -7,7 +7,7 @@
 #include "model.h"
 #include "cnn.h"
 
-bool ConvertWeightsToFxP(CConv2DProxy convolver, const uint32_t numLayers, float ** floatWeights, TFXP ** fxpWeights)
+bool ConvertWeightsToFxP(CConv2DProxy & convolver, const uint32_t numLayers, float ** floatWeights, TFXP ** fxpWeights)
 {
   float * pFloat;
   TFXP * pFxp;
@@ -40,7 +40,7 @@ bool ConvertWeightsToFxP(CConv2DProxy convolver, const uint32_t numLayers, float
   return true;
 }
 
-void FreeParams(CConv2DProxy convolver, const uint32_t numLayers, void ** params)
+void FreeParams(CConv2DProxy & convolver, const uint32_t numLayers, void ** params)
 {
   for (uint32_t ii = 0; ii < numLayers; ++ ii) {
     if (params[ii]) {
@@ -78,7 +78,7 @@ bool LoadFloatWeights(const uint32_t numLayers, float ** weights)
   return true;
 }
 
-bool ConvertBiasesToFxP(CConv2DProxy convolver, const uint32_t numLayers, float ** floatBiases, TFXP ** fxpBiases)
+bool ConvertBiasesToFxP(CConv2DProxy & convolver, const uint32_t numLayers, float ** floatBiases, TFXP ** fxpBiases)
 {
   float * pFloat;
   TFXP * pFxp;
@@ -128,7 +128,7 @@ bool LoadFloatBiases(const uint32_t numLayers, float ** biases)
   return true;
 }
 
-bool LoadModelInFxP(CConv2DProxy convolver, TFXP ** fxpWeights, TFXP ** fxpBiases)
+bool LoadModelInFxP(CConv2DProxy & convolver, TFXP ** fxpWeights, TFXP ** fxpBiases)
 {
   float * floatWeights[NUM_LAYERS];
   float * floatBiases[NUM_LAYERS];
@@ -185,14 +185,15 @@ bool LoadImageInFxp(const char * fileName, TFXP * inputImageFxp, uint8_t * input
   return true;
 }
 
-TFXP Inference(CConv2DProxy convolver, TFXP * inputImageFxp, TFXP * buffer0, TFXP * buffer1, TFXP ** fxpWeights, TFXP ** fxpBiases, TTimes & times)
+TFXP Inference(CConv2DProxy & convolver, TFXP * inputImageFxp, TFXP * buffer0, TFXP * buffer1, TFXP ** fxpWeights, TFXP ** fxpBiases, TTimes & times)
 {
   uint32_t iLayer, size;
   struct timespec start, end;
 
+  // input image --> buffer0
   iLayer = 0, size = 256;
   clock_gettime(CLOCK_MONOTONIC_RAW, &start);
-  convolver.Conv2D_HW(inputImageFxp, buffer0, fxpWeights[iLayer], LayerShapes[iLayer][1], LayerShapes[iLayer][0], size, size);
+  convolver.Conv2D_HW(inputImageFxp, buffer0, fxpWeights[iLayer], LayerShapes[iLayer][0], LayerShapes[iLayer][1], size, size);
   size -= 2;
   AddBiases(buffer0, fxpBiases[iLayer], LayerShapes[iLayer][1], size, size);
   ReLU(buffer0, LayerShapes[iLayer][1], size, size);
@@ -204,9 +205,10 @@ TFXP Inference(CConv2DProxy convolver, TFXP * inputImageFxp, TFXP * buffer0, TFX
   times.timeMaxPool[iLayer] = CalcTimeDiff(end, start);
   ++ iLayer;
 
+  // buffer1 --> buffer0
   size = 127;
   clock_gettime(CLOCK_MONOTONIC_RAW, &start);
-  convolver.Conv2D_HW(buffer1, buffer0, fxpWeights[iLayer], LayerShapes[iLayer][1], LayerShapes[iLayer][0], size, size);
+  convolver.Conv2D_HW(buffer1, buffer0, fxpWeights[iLayer], LayerShapes[iLayer][0], LayerShapes[iLayer][1], size, size);
   size -= 2;
   AddBiases(buffer0, fxpBiases[iLayer], LayerShapes[iLayer][1], size, size);
   ReLU(buffer0, LayerShapes[iLayer][1], size, size);
@@ -218,9 +220,10 @@ TFXP Inference(CConv2DProxy convolver, TFXP * inputImageFxp, TFXP * buffer0, TFX
   times.timeMaxPool[iLayer] = CalcTimeDiff(end, start);
   ++ iLayer;
 
+  // buffer1 --> buffer0
   size = 62;
   clock_gettime(CLOCK_MONOTONIC_RAW, &start);
-  convolver.Conv2D_HW(buffer1, buffer0, fxpWeights[iLayer], LayerShapes[iLayer][1], LayerShapes[iLayer][0], size, size);
+  convolver.Conv2D_HW(buffer1, buffer0, fxpWeights[iLayer], LayerShapes[iLayer][0], LayerShapes[iLayer][1], size, size);
   size -= 2;
   AddBiases(buffer0, fxpBiases[iLayer], LayerShapes[iLayer][1], size, size);
   ReLU(buffer0, LayerShapes[iLayer][1], size, size);
@@ -232,9 +235,10 @@ TFXP Inference(CConv2DProxy convolver, TFXP * inputImageFxp, TFXP * buffer0, TFX
   times.timeMaxPool[iLayer] = CalcTimeDiff(end, start);
   ++ iLayer;
 
+  // buffer1 --> buffer0
   size = 30;
   clock_gettime(CLOCK_MONOTONIC_RAW, &start);
-  convolver.Conv2D_HW(buffer1, buffer0, fxpWeights[iLayer], LayerShapes[iLayer][1], LayerShapes[iLayer][0], size, size);
+  convolver.Conv2D_HW(buffer1, buffer0, fxpWeights[iLayer], LayerShapes[iLayer][0], LayerShapes[iLayer][1], size, size);
   size -= 2;
   AddBiases(buffer0, fxpBiases[iLayer], LayerShapes[iLayer][1], size, size);
   ReLU(buffer0, LayerShapes[iLayer][1], size, size);
@@ -246,9 +250,10 @@ TFXP Inference(CConv2DProxy convolver, TFXP * inputImageFxp, TFXP * buffer0, TFX
   times.timeMaxPool[iLayer] = CalcTimeDiff(end, start);
   ++ iLayer;
 
+  // buffer1 --> buffer0
   size = 14;
   clock_gettime(CLOCK_MONOTONIC_RAW, &start);
-  convolver.Conv2D_HW(buffer1, buffer0, fxpWeights[iLayer], LayerShapes[iLayer][1], LayerShapes[iLayer][0], size, size);
+  convolver.Conv2D_HW(buffer1, buffer0, fxpWeights[iLayer], LayerShapes[iLayer][0], LayerShapes[iLayer][1], size, size);
   size -= 2;
   AddBiases(buffer0, fxpBiases[iLayer], LayerShapes[iLayer][1], size, size);
   ReLU(buffer0, LayerShapes[iLayer][1], size, size);

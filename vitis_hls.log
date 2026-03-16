@@ -1,0 +1,141 @@
+
+****** Vitis HLS - High-Level Synthesis from C, C++ and OpenCL v2022.2 (64-bit)
+  **** SW Build 3670227 on Oct 13 2022
+  **** IP Build 3669848 on Fri Oct 14 08:30:02 MDT 2022
+    ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+
+source /home/user/Xilinx/Vitis_HLS/2022.2/scripts/vitis_hls/hls.tcl -notrace
+INFO: [HLS 200-10] Running '/home/user/Xilinx/Vitis_HLS/2022.2/bin/unwrapped/lnx64.o/vitis_hls'
+INFO: [HLS 200-10] For user 'user' on host 'cedc121f2605' (Linux_x86_64 version 6.12.68-linuxkit) on Mon Mar 16 12:37:28 +0000 2026
+INFO: [HLS 200-10] On os Ubuntu 22.04.5 LTS
+INFO: [HLS 200-10] In directory '/home/user/Lab_HW-SW_codesign/lab_HW_SW_midterm'
+Sourcing Tcl script 'midterm_vitis.tcl'
+INFO: [HLS 200-1510] Running: open_project midterm_vitis 
+INFO: [HLS 200-10] Creating and opening project '/home/user/Lab_HW-SW_codesign/lab_HW_SW_midterm/midterm_vitis'.
+INFO: [HLS 200-1510] Running: set_top Conv2D_HW 
+INFO: [HLS 200-1510] Running: add_files HLS/conv2d.cpp 
+INFO: [HLS 200-10] Adding design file 'HLS/conv2d.cpp' to the project
+INFO: [HLS 200-1510] Running: add_files HLS/conv2d.h 
+INFO: [HLS 200-10] Adding design file 'HLS/conv2d.h' to the project
+INFO: [HLS 200-1510] Running: add_files -tb HLS/conv2DTestbench.cpp 
+INFO: [HLS 200-10] Adding test bench file 'HLS/conv2DTestbench.cpp' to the project
+INFO: [HLS 200-1510] Running: open_solution solution1 -flow_target vivado 
+INFO: [HLS 200-10] Creating and opening solution '/home/user/Lab_HW-SW_codesign/lab_HW_SW_midterm/midterm_vitis/solution1'.
+INFO: [HLS 200-1505] Using flow_target 'vivado'
+Resolution: For help on HLS 200-1505 see www.xilinx.com/cgi-bin/docs/rdoc?v=2022.2;t=hls+guidance;d=200-1505.html
+INFO: [HLS 200-435] Setting 'open_solution -flow_target vivado' configuration: config_interface -m_axi_latency=0
+INFO: [HLS 200-1510] Running: set_part xc7z020clg400-1 
+INFO: [HLS 200-1611] Setting target device to 'xc7z020-clg400-1'
+INFO: [HLS 200-1510] Running: create_clock -period 10 -name default 
+INFO: [SYN 201-201] Setting up clock 'default' with a period of 10ns.
+INFO: [HLS 200-1510] Running: config_export -output /home/user/Lab_HW-SW_codesign/lab_HW_SW_midterm/IP 
+INFO: [HLS 200-1510] Running: csynth_design 
+Running Dispatch Server on port: 42513
+INFO: [HLS 200-111] Finished File checks and directory preparation: CPU user time: 0.03 seconds. CPU system time: 0.01 seconds. Elapsed time: 10.05 seconds; current allocated memory: 238.449 MB.
+INFO: [HLS 200-10] Analyzing design file 'HLS/conv2d.cpp' ... 
+INFO: [HLS 200-111] Finished Source Code Analysis and Preprocessing: CPU user time: 4.81 seconds. CPU system time: 0.61 seconds. Elapsed time: 6.04 seconds; current allocated memory: 240.453 MB.
+INFO: [HLS 200-777] Using interface defaults for 'Vivado' flow target.
+INFO: [HLS 214-178] Inlining function 'FXP_Mult(int, int, unsigned int)' into 'Conv2D_HW(int*, int*, int*, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int)' (HLS/conv2d.cpp:7:0)
+INFO: [HLS 214-115] Multiple burst writes of variable length and bit width 32 in loop 'VITIS_LOOP_22_3'(HLS/conv2d.cpp:22:24) has been inferred on bundle 'gmem'. These burst requests might be further partitioned into multiple requests during RTL generation, based on max_read_burst_length or max_write_burst_length settings. (HLS/conv2d.cpp:22:24)
+INFO: [HLS 200-111] Finished Compiling Optimization and Transform: CPU user time: 3.89 seconds. CPU system time: 0.41 seconds. Elapsed time: 4.69 seconds; current allocated memory: 241.145 MB.
+INFO: [HLS 200-111] Finished Checking Pragmas: CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 0 seconds; current allocated memory: 241.145 MB.
+INFO: [HLS 200-10] Starting code transformations ...
+INFO: [HLS 200-111] Finished Standard Transforms: CPU user time: 0.13 seconds. CPU system time: 0.01 seconds. Elapsed time: 0.16 seconds; current allocated memory: 243.641 MB.
+INFO: [HLS 200-10] Checking synthesizability ...
+INFO: [HLS 200-111] Finished Checking Synthesizability: CPU user time: 0.04 seconds. CPU system time: 0.01 seconds. Elapsed time: 0.05 seconds; current allocated memory: 243.996 MB.
+INFO: [XFORM 203-510] Pipelining loop 'VITIS_LOOP_27_6' (HLS/conv2d.cpp:23) in function 'Conv2D_HW' automatically.
+INFO: [HLS 200-111] Finished Loop, function and other optimizations: CPU user time: 0.1 seconds. CPU system time: 0 seconds. Elapsed time: 0.11 seconds; current allocated memory: 265.996 MB.
+INFO: [XFORM 203-541] Flattening a loop nest 'VITIS_LOOP_26_5' (HLS/conv2d.cpp:23:14) in function 'Conv2D_HW'.
+INFO: [XFORM 203-541] Flattening a loop nest 'VITIS_LOOP_25_4' (HLS/conv2d.cpp:23:14) in function 'Conv2D_HW'.
+WARNING: [HLS 200-960] Cannot flatten loop 'VITIS_LOOP_22_3' (HLS/conv2d.cpp:22:38) in function 'Conv2D_HW' the outer loop is not a perfect loop because there is nontrivial logic in the loop latch.
+Resolution: For help on HLS 200-960 see www.xilinx.com/cgi-bin/docs/rdoc?v=2022.2;t=hls+guidance;d=200-960.html
+WARNING: [HLS 200-960] Cannot flatten loop 'VITIS_LOOP_21_2' (HLS/conv2d.cpp:21:36) in function 'Conv2D_HW' the outer loop is not a perfect loop because there is nontrivial logic in the loop latch.
+Resolution: For help on HLS 200-960 see www.xilinx.com/cgi-bin/docs/rdoc?v=2022.2;t=hls+guidance;d=200-960.html
+INFO: [XFORM 203-541] Flattening a loop nest 'VITIS_LOOP_20_1' (HLS/conv2d.cpp:20:33) in function 'Conv2D_HW'.
+INFO: [HLS 200-111] Finished Architecture Synthesis: CPU user time: 0.13 seconds. CPU system time: 0.01 seconds. Elapsed time: 0.15 seconds; current allocated memory: 267.859 MB.
+INFO: [HLS 200-10] Starting hardware synthesis ...
+INFO: [HLS 200-10] Synthesizing 'Conv2D_HW' ...
+INFO: [HLS 200-10] ----------------------------------------------------------------
+INFO: [HLS 200-42] -- Implementing module 'Conv2D_HW_Pipeline_VITIS_LOOP_25_4_VITIS_LOOP_26_5_VITIS_LOOP_27_6' 
+INFO: [HLS 200-10] ----------------------------------------------------------------
+INFO: [SCHED 204-11] Starting scheduling ...
+INFO: [SCHED 204-61] Pipelining loop 'VITIS_LOOP_25_4_VITIS_LOOP_26_5_VITIS_LOOP_27_6'.
+WARNING: [HLS 200-885] The II Violation in module 'Conv2D_HW_Pipeline_VITIS_LOOP_25_4_VITIS_LOOP_26_5_VITIS_LOOP_27_6' (loop 'VITIS_LOOP_25_4_VITIS_LOOP_26_5_VITIS_LOOP_27_6'): Unable to schedule bus request operation ('pixelValue_req', HLS/conv2d.cpp:31) on port 'gmem' (HLS/conv2d.cpp:31) due to limited memory ports (II = 1). Please consider using a memory core with more ports or partitioning the array.
+Resolution: For help on HLS 200-885 see www.xilinx.com/cgi-bin/docs/rdoc?v=2022.2;t=hls+guidance;d=200-885.html
+INFO: [SCHED 204-61] Discarding stage scheduling solution.
+INFO: [HLS 200-1470] Pipelining result : Target II = NA, Final II = 2, Depth = 20, loop 'VITIS_LOOP_25_4_VITIS_LOOP_26_5_VITIS_LOOP_27_6'
+INFO: [SCHED 204-11] Finished scheduling.
+INFO: [HLS 200-111] Finished Scheduling: CPU user time: 0.3 seconds. CPU system time: 0.01 seconds. Elapsed time: 0.33 seconds; current allocated memory: 272.664 MB.
+INFO: [BIND 205-100] Starting micro-architecture generation ...
+INFO: [BIND 205-101] Performing variable lifetime analysis.
+INFO: [BIND 205-101] Exploring resource sharing.
+INFO: [BIND 205-101] Binding ...
+INFO: [BIND 205-100] Finished micro-architecture generation.
+INFO: [HLS 200-111] Finished Binding: CPU user time: 0.23 seconds. CPU system time: 0 seconds. Elapsed time: 0.23 seconds; current allocated memory: 273.211 MB.
+INFO: [HLS 200-10] ----------------------------------------------------------------
+INFO: [HLS 200-42] -- Implementing module 'Conv2D_HW' 
+INFO: [HLS 200-10] ----------------------------------------------------------------
+INFO: [SCHED 204-11] Starting scheduling ...
+INFO: [SCHED 204-11] Finished scheduling.
+INFO: [HLS 200-111] Finished Scheduling: CPU user time: 0.3 seconds. CPU system time: 0 seconds. Elapsed time: 0.32 seconds; current allocated memory: 273.371 MB.
+INFO: [BIND 205-100] Starting micro-architecture generation ...
+INFO: [BIND 205-101] Performing variable lifetime analysis.
+INFO: [BIND 205-101] Exploring resource sharing.
+INFO: [BIND 205-101] Binding ...
+INFO: [BIND 205-100] Finished micro-architecture generation.
+INFO: [HLS 200-111] Finished Binding: CPU user time: 0.22 seconds. CPU system time: 0 seconds. Elapsed time: 0.23 seconds; current allocated memory: 273.438 MB.
+INFO: [HLS 200-10] ----------------------------------------------------------------
+INFO: [HLS 200-10] -- Generating RTL for module 'Conv2D_HW_Pipeline_VITIS_LOOP_25_4_VITIS_LOOP_26_5_VITIS_LOOP_27_6' 
+INFO: [HLS 200-10] ----------------------------------------------------------------
+INFO: [HLS 200-1030] Apply Unified Pipeline Control on module 'Conv2D_HW_Pipeline_VITIS_LOOP_25_4_VITIS_LOOP_26_5_VITIS_LOOP_27_6' pipeline 'VITIS_LOOP_25_4_VITIS_LOOP_26_5_VITIS_LOOP_27_6' pipeline type 'loop pipeline'
+INFO: [RTGEN 206-100] Generating core module 'mul_32s_32s_32_2_1': 10 instance(s).
+INFO: [RTGEN 206-100] Generating core module 'mul_32s_32s_52_2_1': 1 instance(s).
+INFO: [RTGEN 206-100] Finished creating RTL model for 'Conv2D_HW_Pipeline_VITIS_LOOP_25_4_VITIS_LOOP_26_5_VITIS_LOOP_27_6'.
+INFO: [HLS 200-111] Finished Creating RTL model: CPU user time: 0.33 seconds. CPU system time: 0.02 seconds. Elapsed time: 0.36 seconds; current allocated memory: 274.934 MB.
+INFO: [HLS 200-10] ----------------------------------------------------------------
+INFO: [HLS 200-10] -- Generating RTL for module 'Conv2D_HW' 
+INFO: [HLS 200-10] ----------------------------------------------------------------
+WARNING: [RTGEN 206-101] Design contains AXI ports. Reset is fixed to synchronous and active low.
+INFO: [RTGEN 206-500] Setting interface mode on port 'Conv2D_HW/gmem' to 'm_axi'.
+INFO: [RTGEN 206-500] Setting interface mode on port 'Conv2D_HW/input_r' to 's_axilite & ap_none'.
+INFO: [RTGEN 206-500] Setting interface mode on port 'Conv2D_HW/output_r' to 's_axilite & ap_none'.
+INFO: [RTGEN 206-500] Setting interface mode on port 'Conv2D_HW/coeffs' to 's_axilite & ap_none'.
+INFO: [RTGEN 206-500] Setting interface mode on port 'Conv2D_HW/numChannels' to 's_axilite & ap_none'.
+INFO: [RTGEN 206-500] Setting interface mode on port 'Conv2D_HW/numFilters' to 's_axilite & ap_none'.
+INFO: [RTGEN 206-500] Setting interface mode on port 'Conv2D_HW/inputWidth' to 's_axilite & ap_none'.
+INFO: [RTGEN 206-500] Setting interface mode on port 'Conv2D_HW/inputHeight' to 's_axilite & ap_none'.
+INFO: [RTGEN 206-500] Setting interface mode on port 'Conv2D_HW/convWidth' to 's_axilite & ap_none'.
+INFO: [RTGEN 206-500] Setting interface mode on port 'Conv2D_HW/convHeight' to 's_axilite & ap_none'.
+INFO: [RTGEN 206-500] Setting interface mode on function 'Conv2D_HW' to 's_axilite & ap_ctrl_hs'.
+INFO: [RTGEN 206-100] Bundling port 'input_r', 'output_r', 'coeffs', 'numChannels', 'numFilters', 'inputWidth', 'inputHeight', 'convWidth', 'convHeight' to AXI-Lite port control.
+INFO: [RTGEN 206-100] Generating core module 'mul_32ns_32ns_64_2_1': 2 instance(s).
+INFO: [RTGEN 206-100] Generating core module 'mul_32ns_64ns_96_5_1': 1 instance(s).
+INFO: [RTGEN 206-100] Generating core module 'mul_32s_32s_32_2_1': 7 instance(s).
+INFO: [RTGEN 206-100] Finished creating RTL model for 'Conv2D_HW'.
+INFO: [HLS 200-111] Finished Creating RTL model: CPU user time: 0.57 seconds. CPU system time: 0.02 seconds. Elapsed time: 0.64 seconds; current allocated memory: 279.680 MB.
+INFO: [HLS 200-111] Finished Generating all RTL models: CPU user time: 0.74 seconds. CPU system time: 0.02 seconds. Elapsed time: 0.86 seconds; current allocated memory: 284.348 MB.
+INFO: [HLS 200-1603] Design has inferred MAXI bursts and missed bursts, see Vitis HLS GUI synthesis summary report for detailed information.
+INFO: [HLS 200-111] Finished Updating report files: CPU user time: 0.56 seconds. CPU system time: 0.02 seconds. Elapsed time: 0.63 seconds; current allocated memory: 289.672 MB.
+INFO: [VHDL 208-304] Generating VHDL RTL for Conv2D_HW.
+INFO: [VLOG 209-307] Generating Verilog RTL for Conv2D_HW.
+INFO: [HLS 200-790] **** Loop Constraint Status: All loop constraints were NOT satisfied.
+INFO: [HLS 200-789] **** Estimated Fmax: 136.99 MHz
+INFO: [HLS 200-111] Finished Command csynth_design CPU user time: 12.36 seconds. CPU system time: 1.15 seconds. Elapsed time: 14.83 seconds; current allocated memory: 51.234 MB.
+INFO: [HLS 200-1510] Running: export_design -rtl verilog -format ip_catalog -output /home/user/Lab_HW-SW_codesign/lab_HW_SW_midterm/IP 
+INFO: [IMPL 213-8] Exporting RTL as a Vivado IP.
+
+****** Vivado v2022.2 (64-bit)
+  **** SW Build 3671981 on Fri Oct 14 04:59:54 MDT 2022
+  **** IP Build 3669848 on Fri Oct 14 08:30:02 MDT 2022
+    ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+
+source run_ippack.tcl -notrace
+ipx::create_core: Time (s): cpu = 00:00:06 ; elapsed = 00:00:06 . Memory (MB): peak = 2028.848 ; gain = 31.293 ; free physical = 18395 ; free virtual = 24231
+INFO: [IP_Flow 19-234] Refreshing IP repositories
+INFO: [IP_Flow 19-1704] No user IP repositories specified
+INFO: [IP_Flow 19-2313] Loaded Vivado IP repository '/home/user/Xilinx/Vivado/2022.2/data/ip'.
+INFO: [Common 17-206] Exiting Vivado at Mon Mar 16 12:38:12 2026...
+INFO: [HLS 200-802] Generated output file IP/export.zip
+INFO: [HLS 200-111] Finished Command export_design CPU user time: 16.9 seconds. CPU system time: 1.19 seconds. Elapsed time: 28.06 seconds; current allocated memory: 5.559 MB.
+INFO: [HLS 200-112] Total CPU user time: 31.2 seconds. Total CPU system time: 2.61 seconds. Total elapsed time: 55.32 seconds; peak allocated memory: 295.375 MB.
+INFO: [Common 17-206] Exiting vitis_hls at Mon Mar 16 12:38:22 2026...

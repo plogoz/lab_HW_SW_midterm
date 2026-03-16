@@ -1,0 +1,12 @@
+<pragmas>
+<pragma file="HLS/conv2d.cpp" line="8" pragmaType="interface" parentfunction="Conv2D_HW" mode="s_axilite" port="numChannels" bundle="" offset="-1" name="" clock="" impl="" register="0"/>
+<pragma file="HLS/conv2d.cpp" line="9" pragmaType="interface" parentfunction="Conv2D_HW" mode="s_axilite" port="numFilters" bundle="" offset="-1" name="" clock="" impl="" register="0"/>
+<pragma file="HLS/conv2d.cpp" line="10" pragmaType="interface" parentfunction="Conv2D_HW" mode="s_axilite" port="inputWidth" bundle="" offset="-1" name="" clock="" impl="" register="0"/>
+<pragma file="HLS/conv2d.cpp" line="11" pragmaType="interface" parentfunction="Conv2D_HW" mode="s_axilite" port="inputHeight" bundle="" offset="-1" name="" clock="" impl="" register="0"/>
+<pragma file="HLS/conv2d.cpp" line="12" pragmaType="interface" parentfunction="Conv2D_HW" mode="s_axilite" port="convWidth" bundle="" offset="-1" name="" clock="" impl="" register="0"/>
+<pragma file="HLS/conv2d.cpp" line="13" pragmaType="interface" parentfunction="Conv2D_HW" mode="s_axilite" port="convHeight" bundle="" offset="-1" name="" clock="" impl="" register="0"/>
+<pragma file="HLS/conv2d.cpp" line="14" pragmaType="interface" parentfunction="Conv2D_HW" mode="s_axilite" port="" bundle="" offset="-1" name="" clock="" impl="" register="0"/>
+<pragma file="HLS/conv2d.cpp" line="16" pragmaType="interface" parentfunction="Conv2D_HW" mode="m_axi" port="input" bundle="" offset="slave" name="" depth="-1" num_read_outstanding="-1" num_write_outstanding="-1" max_burst_read_length="-1" max_burst_write_length="-1" latency="-1" max_widen_bitwidth="-1" channel=""/>
+<pragma file="HLS/conv2d.cpp" line="17" pragmaType="interface" parentfunction="Conv2D_HW" mode="m_axi" port="output" bundle="" offset="slave" name="" depth="-1" num_read_outstanding="-1" num_write_outstanding="-1" max_burst_read_length="-1" max_burst_write_length="-1" latency="-1" max_widen_bitwidth="-1" channel=""/>
+<pragma file="HLS/conv2d.cpp" line="18" pragmaType="interface" parentfunction="Conv2D_HW" mode="m_axi" port="coeffs" bundle="" offset="slave" name="" depth="-1" num_read_outstanding="-1" num_write_outstanding="-1" max_burst_read_length="-1" max_burst_write_length="-1" latency="-1" max_widen_bitwidth="-1" channel=""/>
+</pragmas>

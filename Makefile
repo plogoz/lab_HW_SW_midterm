@@ -36,7 +36,7 @@ help:
 	@echo "MAKEFILE targets:"
 	@echo "  ip             - Build/export IP (no C simulation)"
 	@echo "  ip_sim         - Build/export IP with C simulation"
-	@echo "  vivado_project - Creates the Vivado block design using the generated IP"
+	@echo "  vivado_project - Creates the Vivado block design + runs synth, impl & bitstream"
 	@echo "  clean          - Removes generated projects, IP folders, and logs"
 	@echo ""
 	@echo "Tool overrides:"
@@ -65,13 +65,17 @@ IP/component.xml: HLS/conv2d.cpp HLS/conv2d.h $(PROJECT_NAME)_vitis.tcl | check_
 	"$(VITIS_HLS_BIN)" -f $(PROJECT_NAME)_vitis.tcl -tclargs $(CSIM)
 	# @test -f IP/component.xml || (echo "ERROR: IP/component.xml not found after Vitis HLS run. Check vitis_hls.log for errors."; exit 1)
 
-# # Step 2: Create Vivado Project
-# vivado_project: $(PROJECT_NAME)_vivado/$(PROJECT_NAME)_vivado.xpr
+# Step 2: Create Vivado Project, run synthesis, implementation, and generate bitstream
+BITSTREAM := $(PROJECT_NAME)_vivado/$(PROJECT_NAME)_vivado.runs/impl_1/design_1_wrapper.bit
 
-# $(PROJECT_NAME)_vivado/$(PROJECT_NAME)_vivado.xpr: IP/component.xml $(PROJECT_NAME)_vivado.tcl | check_tools
-# 	@echo "Reconstructing Vivado Project..."
-# 	rm -rf $(PROJECT_NAME)_vivado
-# 	"$(VIVADO_BIN)" -mode batch -source $(PROJECT_NAME)_vivado.tcl
+vivado_project: $(BITSTREAM)
+
+$(BITSTREAM): IP/component.xml $(PROJECT_NAME)_vivado.tcl | check_tools
+	@echo "Reconstructing Vivado project and running full build flow..."
+	rm -rf $(PROJECT_NAME)_vivado
+	"$(VIVADO_BIN)" -mode batch -source $(PROJECT_NAME)_vivado.tcl
+	@test -f $@ || (echo "ERROR: Bitstream not found at $@. Check vivado*.log for details."; exit 1)
+	@echo "SUCCESS: Bitstream generated at $@"
 
 # Step 3: Clean workspace
 clean:
