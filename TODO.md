@@ -1,3 +1,2 @@
 # TO DO list:
-- add the CNN folder with the testbench
-- eddit the CNN folder when the hardware convolution is fast enough (in my taste), such that it won't run for 2'000s
+- do the caching optimization: pour le moment, je cache juste un bout de convolution, mais je vais les chercher en pipeline, et, 2 for loops en parallèle, la convolution et le caching des coeffs

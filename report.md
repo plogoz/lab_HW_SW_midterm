@@ -19,3 +19,5 @@ Max coeffs number: on layer 4 (in conv2d.h):
 
 const uint32_t MAX_COEFF_NBR = 128 * 256 * CONV_SIZE * CONV_SIZE;
 ```
+
+ça marche pas comme approche
