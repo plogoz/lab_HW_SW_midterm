@@ -5,6 +5,8 @@
 #include <ap_fixed.h>
 #include <ap_int.h>
 
+#define CONV_SIZE 3
+
 const uint32_t DECIMALS = 20;
 typedef int32_t TFXP;     // Parameters and activations
 typedef int64_t TFXP_MULT;// Intermmediate results of multiplications

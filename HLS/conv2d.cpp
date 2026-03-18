@@ -1,4 +1,5 @@
 #include "conv2d.h"
+#include <cstdint>
 
 void Conv2D_HW(TFXP *input, TFXP * output, TFXP * coeffs,
       uint32_t numChannels, uint32_t numFilters,
@@ -23,11 +24,12 @@ void Conv2D_HW(TFXP *input, TFXP * output, TFXP * coeffs,
         TFXP acc;
         acc = 0;
         for (uint32_t iChannel = 0; iChannel < numChannels; ++iChannel) {
-          for (uint32_t cy = 0; cy < convHeight; ++cy) {
-            for (uint32_t cx = 0; cx < convWidth; ++cx) {
-              //acc += coeffs[iFilter][iChannel][cy][cx] * input[iChannel][y+cy][x+cx];
+          for (uint32_t cy = 0; cy < CONV_SIZE; ++cy) {
+            for (uint32_t cx = 0; cx < CONV_SIZE; ++cx) {
+                #pragma HLS UNROLL
+
               TFXP pixelValue, filterValue;
-              filterValue = *(coeffs + iFilter*numChannels*convHeight*convWidth + iChannel*convHeight*convWidth + cy*convWidth + cx);
+              filterValue = *(coeffs + iFilter*numChannels*CONV_SIZE*CONV_SIZE + iChannel*CONV_SIZE*CONV_SIZE + cy*CONV_SIZE + cx);
               pixelValue = *(input + iChannel*inputWidth*inputHeight + (y+cy)*inputWidth + (x+cx));
               acc += FXP_Mult(filterValue, pixelValue, DECIMALS);
             }
