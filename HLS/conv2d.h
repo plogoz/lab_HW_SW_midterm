@@ -7,6 +7,8 @@
 
 #define CONV_SIZE 3
 #define MAX_CHANNELS 256
+#define MAX_INPUT_SIZE 2304
+#define MAX_ROW_SIZE 127 * 32 // Convolution layer 1
 
 const uint32_t DECIMALS = 20;
 typedef int32_t TFXP;     // Parameters and activations
