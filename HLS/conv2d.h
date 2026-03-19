@@ -6,6 +6,7 @@
 #include <ap_int.h>
 
 #define CONV_SIZE 3
+#define MAX_CHANNELS 256
 
 const uint32_t DECIMALS = 20;
 typedef int32_t TFXP;     // Parameters and activations

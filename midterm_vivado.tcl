@@ -1793,7 +1793,7 @@ catch {
 }
 
 puts "INFO: Launching synthesis run (synth_1)..."
-launch_runs synth_1 -jobs 4
+launch_runs synth_1 -jobs 8
 wait_on_run synth_1
 
 if {[get_property PROGRESS [get_runs synth_1]] != "100%"} {
@@ -1802,7 +1802,7 @@ if {[get_property PROGRESS [get_runs synth_1]] != "100%"} {
 puts "INFO: Synthesis completed successfully."
 
 puts "INFO: Launching implementation run (impl_1)..."
-launch_runs impl_1 -jobs 4
+launch_runs impl_1 -jobs 8
 wait_on_run impl_1
 
 if {[get_property PROGRESS [get_runs impl_1]] != "100%"} {
@@ -1811,7 +1811,7 @@ if {[get_property PROGRESS [get_runs impl_1]] != "100%"} {
 puts "INFO: Implementation completed successfully."
 
 puts "INFO: Generating bitstream..."
-launch_runs impl_1 -to_step write_bitstream -jobs 4
+launch_runs impl_1 -to_step write_bitstream -jobs 8
 wait_on_run impl_1
 
 if {[get_property PROGRESS [get_runs impl_1]] != "100%"} {
