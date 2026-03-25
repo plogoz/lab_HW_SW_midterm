@@ -2,8 +2,8 @@
 #define CONV2D_H
 
 #include <stdint.h>
-#include <ap_fixed.h>
-#include <ap_int.h>
+// #include <ap_fixed.h>
+// #include <ap_int.h>
 
 #define CONV_SIZE 3
 #define MAX_CHANNELS 256
@@ -20,6 +20,10 @@ inline TFXP FXP_Mult(TFXP a, TFXP b, uint32_t decimalBits = DECIMALS)
   res = res >> decimalBits;
   return res;
 }
+
+void coeffCaching(TFXP *coeffs, TFXP filter_buffer[MAX_CHANNELS][CONV_SIZE][CONV_SIZE], uint32_t numChannels, uint32_t iFilter);
+
+void rowCaching(TFXP *input, TFXP rows_buffer[CONV_SIZE][MAX_ROW_SIZE], uint32_t inputWidth, uint32_t y);
 
 void Conv2D_HW(TFXP *input, TFXP * output, TFXP * coeffs,
       uint32_t numChannels, uint32_t numFilters,

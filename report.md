@@ -11,6 +11,7 @@
 | SW | SW only on PYNQ | 28.079 | x | n/a | n/a | n/a | n/a | 0 | no |
 | HW | without optimization | 87.635 | 100 | 5785 | 6938 | 0 | 45 | 9,46 | No |
 | HW | task 2 | 38.21 | 100 | 3293 | 5076 | 5 | 22 | not yet done | - |
+task 3: 8,6 secondes
 
 ## Task 2: coeffs caching:
 - we can't use any pragmas (it's for newer versions), so need to make an array and pipeline / unroll its loading loop.
