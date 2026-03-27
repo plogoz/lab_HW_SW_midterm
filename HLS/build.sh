@@ -1,4 +1,6 @@
 #!/bin/bash
+echo "deleting previous build artifacts..."
+rm -f conv2d_test
 echo "Building Conv2D testbench with clang++..."
 clang++ -std=c++11 -O0 \
   conv2d.cpp \

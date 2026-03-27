@@ -88,3 +88,4 @@ clean:
 	@echo "Cleaning up generated files..."
 	rm -rf $(PROJECT_NAME)_vitis $(PROJECT_NAME)_vivado IP .Xil NA
 	rm -f vivado*.jou vivado*.log vivado*.str vitis_hls.log
+	rm -rf *.log .*jou

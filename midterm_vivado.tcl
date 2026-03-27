@@ -424,9 +424,15 @@ proc cr_bd_design_1 { parentCell } {
   # Create instance: Conv2D_HW_0, and set properties
   set Conv2D_HW_0 [ create_bd_cell -type ip -vlnv xilinx.com:hls:Conv2D_HW:1.0 Conv2D_HW_0 ]
 
-  # Create instance: axi_interconnect_0, and set properties
-  set axi_interconnect_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_interconnect:2.1 axi_interconnect_0 ]
-  set_property CONFIG.NUM_MI {1} $axi_interconnect_0
+  # Create instance: axi_mem_intercon, and set properties
+  set axi_mem_intercon [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_interconnect:2.1 axi_mem_intercon ]
+  set_property -dict [list \
+    CONFIG.NUM_MI {2} \
+    CONFIG.NUM_SI {2} \
+    CONFIG.S00_HAS_DATA_FIFO {2} \
+    CONFIG.S01_HAS_DATA_FIFO {2} \
+    CONFIG.STRATEGY {2} \
+  ] $axi_mem_intercon
 
 
   # Create instance: processing_system7_0, and set properties
@@ -954,7 +960,7 @@ proc cr_bd_design_1 { parentCell } {
     CONFIG.PCW_USE_S_AXI_GP0 {0} \
     CONFIG.PCW_USE_S_AXI_GP1 {0} \
     CONFIG.PCW_USE_S_AXI_HP0 {1} \
-    CONFIG.PCW_USE_S_AXI_HP1 {0} \
+    CONFIG.PCW_USE_S_AXI_HP1 {1} \
     CONFIG.PCW_USE_S_AXI_HP2 {0} \
     CONFIG.PCW_USE_S_AXI_HP3 {0} \
     CONFIG.PCW_USE_TRACE {0} \
@@ -969,52 +975,62 @@ proc cr_bd_design_1 { parentCell } {
   set_property CONFIG.NUM_MI {1} $ps7_0_axi_periph
 
 
-  # Create instance: rst_ps7_0_50M, and set properties
-  set rst_ps7_0_50M [ create_bd_cell -type ip -vlnv xilinx.com:ip:proc_sys_reset:5.0 rst_ps7_0_50M ]
+  # Create instance: rst_ps7_0_100M, and set properties
+  set rst_ps7_0_100M [ create_bd_cell -type ip -vlnv xilinx.com:ip:proc_sys_reset:5.0 rst_ps7_0_100M ]
 
   # Create interface connections
-  connect_bd_intf_net -intf_net Conv2D_HW_0_m_axi_gmem [get_bd_intf_pins Conv2D_HW_0/m_axi_gmem] [get_bd_intf_pins axi_interconnect_0/S00_AXI]
-  connect_bd_intf_net -intf_net axi_interconnect_0_M00_AXI [get_bd_intf_pins axi_interconnect_0/M00_AXI] [get_bd_intf_pins processing_system7_0/S_AXI_HP0]
+  connect_bd_intf_net -intf_net Conv2D_HW_0_m_axi_gmem0 [get_bd_intf_pins Conv2D_HW_0/m_axi_gmem0] [get_bd_intf_pins axi_mem_intercon/S00_AXI]
+  connect_bd_intf_net -intf_net Conv2D_HW_0_m_axi_gmem1 [get_bd_intf_pins Conv2D_HW_0/m_axi_gmem1] [get_bd_intf_pins axi_mem_intercon/S01_AXI]
+  connect_bd_intf_net -intf_net axi_mem_intercon_M00_AXI [get_bd_intf_pins axi_mem_intercon/M00_AXI] [get_bd_intf_pins processing_system7_0/S_AXI_HP0]
+  connect_bd_intf_net -intf_net axi_mem_intercon_M01_AXI [get_bd_intf_pins axi_mem_intercon/M01_AXI] [get_bd_intf_pins processing_system7_0/S_AXI_HP1]
   connect_bd_intf_net -intf_net processing_system7_0_DDR [get_bd_intf_ports DDR] [get_bd_intf_pins processing_system7_0/DDR]
   connect_bd_intf_net -intf_net processing_system7_0_FIXED_IO [get_bd_intf_ports FIXED_IO] [get_bd_intf_pins processing_system7_0/FIXED_IO]
   connect_bd_intf_net -intf_net processing_system7_0_M_AXI_GP0 [get_bd_intf_pins processing_system7_0/M_AXI_GP0] [get_bd_intf_pins ps7_0_axi_periph/S00_AXI]
   connect_bd_intf_net -intf_net ps7_0_axi_periph_M00_AXI [get_bd_intf_pins Conv2D_HW_0/s_axi_control] [get_bd_intf_pins ps7_0_axi_periph/M00_AXI]
 
   # Create port connections
-  connect_bd_net -net processing_system7_0_FCLK_CLK0 [get_bd_pins Conv2D_HW_0/ap_clk] [get_bd_pins axi_interconnect_0/ACLK] [get_bd_pins axi_interconnect_0/M00_ACLK] [get_bd_pins axi_interconnect_0/S00_ACLK] [get_bd_pins processing_system7_0/FCLK_CLK0] [get_bd_pins processing_system7_0/M_AXI_GP0_ACLK] [get_bd_pins processing_system7_0/S_AXI_HP0_ACLK] [get_bd_pins ps7_0_axi_periph/ACLK] [get_bd_pins ps7_0_axi_periph/M00_ACLK] [get_bd_pins ps7_0_axi_periph/S00_ACLK] [get_bd_pins rst_ps7_0_50M/slowest_sync_clk]
-  connect_bd_net -net processing_system7_0_FCLK_RESET0_N [get_bd_pins processing_system7_0/FCLK_RESET0_N] [get_bd_pins rst_ps7_0_50M/ext_reset_in]
-  connect_bd_net -net rst_ps7_0_50M_peripheral_aresetn [get_bd_pins Conv2D_HW_0/ap_rst_n] [get_bd_pins axi_interconnect_0/ARESETN] [get_bd_pins axi_interconnect_0/M00_ARESETN] [get_bd_pins axi_interconnect_0/S00_ARESETN] [get_bd_pins ps7_0_axi_periph/ARESETN] [get_bd_pins ps7_0_axi_periph/M00_ARESETN] [get_bd_pins ps7_0_axi_periph/S00_ARESETN] [get_bd_pins rst_ps7_0_50M/peripheral_aresetn]
+  connect_bd_net -net processing_system7_0_FCLK_CLK0 [get_bd_pins Conv2D_HW_0/ap_clk] [get_bd_pins axi_mem_intercon/ACLK] [get_bd_pins axi_mem_intercon/M00_ACLK] [get_bd_pins axi_mem_intercon/M01_ACLK] [get_bd_pins axi_mem_intercon/S00_ACLK] [get_bd_pins axi_mem_intercon/S01_ACLK] [get_bd_pins processing_system7_0/FCLK_CLK0] [get_bd_pins processing_system7_0/M_AXI_GP0_ACLK] [get_bd_pins processing_system7_0/S_AXI_HP0_ACLK] [get_bd_pins processing_system7_0/S_AXI_HP1_ACLK] [get_bd_pins ps7_0_axi_periph/ACLK] [get_bd_pins ps7_0_axi_periph/M00_ACLK] [get_bd_pins ps7_0_axi_periph/S00_ACLK] [get_bd_pins rst_ps7_0_100M/slowest_sync_clk]
+  connect_bd_net -net processing_system7_0_FCLK_RESET0_N [get_bd_pins processing_system7_0/FCLK_RESET0_N] [get_bd_pins rst_ps7_0_100M/ext_reset_in]
+  connect_bd_net -net rst_ps7_0_100M_peripheral_aresetn [get_bd_pins Conv2D_HW_0/ap_rst_n] [get_bd_pins axi_mem_intercon/ARESETN] [get_bd_pins axi_mem_intercon/M00_ARESETN] [get_bd_pins axi_mem_intercon/M01_ARESETN] [get_bd_pins axi_mem_intercon/S00_ARESETN] [get_bd_pins axi_mem_intercon/S01_ARESETN] [get_bd_pins ps7_0_axi_periph/ARESETN] [get_bd_pins ps7_0_axi_periph/M00_ARESETN] [get_bd_pins ps7_0_axi_periph/S00_ARESETN] [get_bd_pins rst_ps7_0_100M/peripheral_aresetn]
 
   # Create address segments
-  assign_bd_address -offset 0x00000000 -range 0x20000000 -target_address_space [get_bd_addr_spaces Conv2D_HW_0/Data_m_axi_gmem] [get_bd_addr_segs processing_system7_0/S_AXI_HP0/HP0_DDR_LOWOCM] -force
+  assign_bd_address -offset 0x00000000 -range 0x20000000 -target_address_space [get_bd_addr_spaces Conv2D_HW_0/Data_m_axi_gmem0] [get_bd_addr_segs processing_system7_0/S_AXI_HP0/HP0_DDR_LOWOCM] -force
   assign_bd_address -offset 0x40000000 -range 0x00010000 -target_address_space [get_bd_addr_spaces processing_system7_0/Data] [get_bd_addr_segs Conv2D_HW_0/s_axi_control/Reg] -force
 
   # Perform GUI Layout
   regenerate_bd_layout -layout_string {
    "ActiveEmotionalView":"Default View",
-   "Default View_ScaleFactor":"0.905455",
-   "Default View_TopLeft":"-74,-287",
+   "Default View_Layers":"/processing_system7_0_FCLK_CLK0:true|/processing_system7_0_FCLK_RESET0_N:true|/rst_ps7_0_100M_peripheral_aresetn:true|",
+   "Default View_ScaleFactor":"0.675737",
+   "Default View_TopLeft":"0,-123",
+   "Display-PortTypeClock":"true",
+   "Display-PortTypeReset":"true",
    "ExpandedHierarchyInLayout":"",
+   "Interfaces View_Layers":"/processing_system7_0_FCLK_RESET0_N:false|/processing_system7_0_FCLK_CLK0:false|/rst_ps7_0_100M_peripheral_aresetn:false|",
+   "Interfaces View_ScaleFactor":"0.907154",
+   "Interfaces View_TopLeft":"0,-65",
    "guistr":"# # String gsaved with Nlview 7.0r4  2019-12-20 bk=1.5203 VDI=41 GEI=36 GUI=JA:10.0 TLS
 #  -string -flagsOSRD
-preplace port DDR -pg 1 -lvl 4 -x 1200 -y -270 -defaultsOSRD
-preplace port FIXED_IO -pg 1 -lvl 4 -x 1200 -y -10 -defaultsOSRD
-preplace inst processing_system7_0 -pg 1 -lvl 1 -x 240 -y 20 -defaultsOSRD
-preplace inst Conv2D_HW_0 -pg 1 -lvl 1 -x 240 -y -150 -defaultsOSRD
-preplace inst ps7_0_axi_periph -pg 1 -lvl 3 -x 1030 -y 160 -defaultsOSRD
-preplace inst rst_ps7_0_50M -pg 1 -lvl 2 -x 680 -y 200 -defaultsOSRD
-preplace inst axi_interconnect_0 -pg 1 -lvl 2 -x 680 -y -130 -defaultsOSRD
-preplace netloc processing_system7_0_FCLK_CLK0 1 0 3 0 -230 470 100 860
-preplace netloc processing_system7_0_FCLK_RESET0_N 1 1 1 460 70n
-preplace netloc rst_ps7_0_50M_peripheral_aresetn 1 0 3 20 -240 490J -250 870
-preplace netloc processing_system7_0_M_AXI_GP0 1 1 2 NJ 30 880
-preplace netloc ps7_0_axi_periph_M00_AXI 1 0 4 10 -260 NJ -260 NJ -260 1180
-preplace netloc Conv2D_HW_0_m_axi_gmem 1 1 1 480 -190n
-preplace netloc axi_interconnect_0_M00_AXI 1 0 3 -10 -280 N -280 860
-preplace netloc processing_system7_0_DDR 1 1 3 460J -270 NJ -270 NJ
-preplace netloc processing_system7_0_FIXED_IO 1 1 3 NJ -10 NJ -10 NJ
-levelinfo -pg 1 -30 240 680 1030 1200
-pagesize -pg 1 -db -bbox -sgen -30 -350 1320 300
+preplace port DDR -pg 1 -lvl 5 -x 1650 -y 160 -defaultsOSRD
+preplace port FIXED_IO -pg 1 -lvl 5 -x 1650 -y 180 -defaultsOSRD
+preplace inst processing_system7_0 -pg 1 -lvl 2 -x 650 -y 190 -defaultsOSRD
+preplace inst ps7_0_axi_periph -pg 1 -lvl 4 -x 1440 -y 80 -defaultsOSRD
+preplace inst rst_ps7_0_100M -pg 1 -lvl 3 -x 1060 -y 290 -defaultsOSRD
+preplace inst axi_mem_intercon -pg 1 -lvl 4 -x 1440 -y 350 -defaultsOSRD
+preplace inst Conv2D_HW_0 -pg 1 -lvl 1 -x 220 -y 80 -defaultsOSRD
+preplace netloc processing_system7_0_FCLK_CLK0 1 0 4 40 0 400 50 880 50 1290
+preplace netloc processing_system7_0_FCLK_RESET0_N 1 2 1 870 240n
+preplace netloc rst_ps7_0_100M_peripheral_aresetn 1 0 4 20 -10 NJ -10 NJ -10 1280
+preplace netloc Conv2D_HW_0_m_axi_gmem0 1 1 3 NJ 60 NJ 60 1250
+preplace netloc Conv2D_HW_0_m_axi_gmem1 1 1 3 420 70 N 70 1270
+preplace netloc axi_mem_intercon_M00_AXI 1 1 4 410 550 NJ 550 NJ 550 1600
+preplace netloc axi_mem_intercon_M01_AXI 1 1 4 420 560 NJ 560 NJ 560 1590
+preplace netloc processing_system7_0_DDR 1 2 3 NJ 140 1260 530 1620
+preplace netloc processing_system7_0_FIXED_IO 1 2 3 NJ 160 1240 520 1630
+preplace netloc processing_system7_0_M_AXI_GP0 1 2 2 870 20 NJ
+preplace netloc ps7_0_axi_periph_M00_AXI 1 0 5 30 540 NJ 540 NJ 540 NJ 540 1610
+levelinfo -pg 1 0 220 650 1060 1440 1650
+pagesize -pg 1 -db -bbox -sgen 0 -40 1770 570
 "
 }
 
@@ -1809,6 +1825,62 @@ if {[get_property PROGRESS [get_runs impl_1]] != "100%"} {
   error "ERROR: Implementation failed. Check implementation log for details."
 }
 puts "INFO: Implementation completed successfully."
+
+# ============================================================================
+# REPORT EXTRACTION
+# ============================================================================
+
+# Open the implemented design to enable report generation
+open_run impl_1
+
+set report_dir "${origin_dir}/reports"
+file mkdir $report_dir
+
+# --- Synthesis reports ---
+set synth_dir [get_property DIRECTORY [get_runs synth_1]]
+
+puts "INFO: Extracting synthesis utilization report..."
+set synth_util_src "${synth_dir}/design_1_wrapper_utilization_synth.rpt"
+set synth_util_dst "${report_dir}/utilization_synth.rpt"
+if {[file exists $synth_util_src]} {
+  file copy -force $synth_util_src $synth_util_dst
+  puts "INFO: Synthesis utilization report copied to: ${synth_util_dst}"
+} else {
+  puts "WARNING: Synthesis utilization report not found at ${synth_util_src}, generating fresh..."
+  report_utilization -file $synth_util_dst
+}
+
+# --- Implementation reports ---
+set impl_dir [get_property DIRECTORY [get_runs impl_1]]
+
+puts "INFO: Generating implementation utilization report..."
+report_utilization -file "${report_dir}/utilization_impl.rpt"
+puts "INFO: Implementation utilization report written to: ${report_dir}/utilization_impl.rpt"
+
+puts "INFO: Generating timing summary report..."
+report_timing_summary -max_paths 10 -report_unconstrained \
+  -file "${report_dir}/timing_summary.rpt"
+puts "INFO: Timing summary report written to: ${report_dir}/timing_summary.rpt"
+
+puts "INFO: Generating critical-path timing report (top 20 paths)..."
+report_timing -sort_by group -max_paths 20 -path_type summary \
+  -file "${report_dir}/timing_paths.rpt"
+puts "INFO: Critical-path timing report written to: ${report_dir}/timing_paths.rpt"
+
+puts "INFO: Generating clock interaction report..."
+report_clock_interaction -delay_type min_max \
+  -file "${report_dir}/clock_interaction.rpt"
+puts "INFO: Clock interaction report written to: ${report_dir}/clock_interaction.rpt"
+
+puts "INFO: Generating DRC report..."
+report_drc -file "${report_dir}/drc.rpt"
+puts "INFO: DRC report written to: ${report_dir}/drc.rpt"
+
+puts "INFO: Generating power report..."
+report_power -file "${report_dir}/power.rpt"
+puts "INFO: Power report written to: ${report_dir}/power.rpt"
+
+puts "INFO: All reports written to: ${report_dir}"
 
 puts "INFO: Generating bitstream..."
 launch_runs impl_1 -to_step write_bitstream -jobs 8
