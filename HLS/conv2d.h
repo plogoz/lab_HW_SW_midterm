@@ -2,8 +2,8 @@
 #define CONV2D_H
 
 #include <stdint.h>
-#include <ap_fixed.h>
-#include <ap_int.h>
+// #include <ap_fixed.h>
+// #include <ap_int.h>
 
 #define CONV_SIZE 3
 #define MAX_CHANNELS 256
