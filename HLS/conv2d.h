@@ -2,14 +2,15 @@
 #define CONV2D_H
 
 #include <stdint.h>
-// #include <ap_fixed.h>
-// #include <ap_int.h>
+#include <ap_fixed.h>
+#include <ap_int.h>
 
 #define CONV_SIZE 3
 #define MAX_CHANNELS 256
 #define MAX_INPUT_SIZE 2304
-// #define MAX_ROW_SIZE 127 * 32 // Convolution layer 1
-#define MAX_ROW_SIZE 256
+#define MAX_ROW_SIZE 127 * 32
+#define MAX_INPUT_WIDTH 256
+#define NUM_OUTPUT_FILTER 4   // Filters processed in parallel (must be 2^n)
 
 const uint32_t DECIMALS = 20;
 typedef int32_t TFXP;     // Parameters and activations
