@@ -49,22 +49,15 @@ void Conv2D_HW(TFXP *input, TFXP * output, TFXP * coeffs,
     #pragma HLS INTERFACE m_axi port=input \
                         offset=slave \
                         bundle=gmem0 \
-                        max_widen_bitwidth=128 \
-                        max_read_burst_length=256 \
                         // latency=14 // found by latency analysis of Vitis
 
     #pragma HLS INTERFACE m_axi port=output \
                         offset=slave \
                         bundle=gmem0 \
-                        max_widen_bitwidth=128 \
-                        max_write_burst_length=256 \
-                        num_write_outstanding=32
 
     #pragma HLS INTERFACE m_axi port=coeffs \
                         offset=slave \
                         bundle=gmem1 \
-                        max_widen_bitwidth=128 \
-                        max_read_burst_length=256 \
                         num_read_outstanding=1 \
                         max_write_burst_length=2  // found in the Xilinx doc for read only ports
 
@@ -108,7 +101,8 @@ void Conv2D_HW(TFXP *input, TFXP * output, TFXP * coeffs,
 
                     for (uint32_t iFilterP = 0; iFilterP < NUM_OUTPUT_FILTER; ++iFilterP) {
 
-                        TFXP sum = acc_buf[iFilterP][x];
+                        // TFXP sum = acc_buf[iFilterP][x];
+                        TFXP sum = 0;
                         for (uint32_t cy = 0; cy < CONV_SIZE; ++cy) {
 
                             for (uint32_t cx = 0; cx < CONV_SIZE; ++cx) {
@@ -116,7 +110,7 @@ void Conv2D_HW(TFXP *input, TFXP * output, TFXP * coeffs,
                                 sum += FXP_Mult(filter_buffer[iFilterP][iChannel][cy][cx], rows_buffer[cy][x+cx], DECIMALS);
                             }
                         }
-                        acc_buf[iFilterP][x] = sum;
+                        acc_buf[iFilterP][x] += sum;
                     }
                 }
             }

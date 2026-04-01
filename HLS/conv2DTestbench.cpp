@@ -90,7 +90,7 @@ int main(int argc, char ** argv)
   uint32_t width = MAX_WIDTH, height = MAX_HEIGHT;
   uint32_t channels, filters;
   uint32_t currentOutputSize;
-  uint32_t sizes[][2] = { {3, 32}, {16, 16}, {32, 32}, {64, 64}, {128, 128}, {256, 256} };
+  uint32_t sizes[][2] = { {32, 16} ,{3, 32}, {16, 16}, {32, 32}, {64, 64}, {128, 128}, {256, 256} };
   uint32_t numSizes = sizeof(sizes) / (sizeof(uint32_t) * 2);
   bool errors = false;
 
