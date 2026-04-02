@@ -27,11 +27,11 @@ Tool overrides:
 | Name | Description | Time (s) | Frequency (MHz) | LUTs | FFs | BRAMs | DSPs | Cost | Pareto ? (Yes / No) |
 |-----------------|-----------------|---------|---------|---------|---------|---------|---------|---------|---------|
 | SW | macOS M1 Max software version | 0.457 | n/a | n/a | n/a | n/a | n/a | 0 | Yes |
-| SW | SW only on PYNQ | 28.079 | x | n/a | n/a | n/a | n/a | 0 | no |
+| SW | SW only on PYNQ | 28.079 | x | n/a | n/a | n/a | n/a | 0 | yes |
 | HW | Software verison directly rrun into Vitis and Vivado | 87.635 | 100 | 5785 | 6938 | 0 | 45 | 9,46 | no |
-| HW | task 2 | 38.21 | 100 | 3293 | 5076 | 5 | 22 | 6,1 | - |
-|HW | task 3 | 8.6 | 100 | 19058 | 6227 | 125 | 46 | 37,9 | - |
-|HW | task 4 | 4.4 | 50 | 9627 | 27724 | 62.5 | 171 | 41,6| - |
+| HW | task 2 | 38.21 | 100 | 3293 | 5076 | 5 | 22 | 6,1 | yes |
+|HW | task 3 | 8.6 | 100 | 19058 | 6227 | 125 | 46 | 37,9 | no |
+|HW | task 4 | 4.4 | 50 | 9627 | 27724 | 62.5 | 171 | 41,6| yes |
 
 ## Design report:
 
