@@ -1,4 +1,4 @@
-.PHONY: ip ip_sim vivado clean help check_tools
+.PHONY: ip vivado clean help
 
 PROJECT_NAME := midterm
 
@@ -22,12 +22,6 @@ else
     ENV_NAME := Linux
 endif
 
-# HLS flow option: 0 = no C simulation, 1 = run csim
-CSIM ?= 0
-
-# HLS flow option: 0 = no C simulation, 1 = run csim
-CSIM ?= 0
-
 # ============================================================================
 # HELP & CONFIGURATION
 # ============================================================================
@@ -35,7 +29,6 @@ CSIM ?= 0
 help:
 	@echo "MAKEFILE targets:"
 	@echo "  ip             - Build/export IP (no C simulation)"
-	@echo "  ip_sim         - Build/export IP with C simulation"
 	@echo "  vivado - Creates the Vivado block design + runs synth, impl & bitstream"
 	@echo "  clean          - Removes generated projects, IP folders, and logs"
 	@echo ""
@@ -47,22 +40,18 @@ check_tools:
 	@test -x "$(VIVADO_BIN)"    || (echo "ERROR: VIVADO_BIN not executable: $(VIVADO_BIN)"; exit 1)
 	@command -v unzip >/dev/null 2>&1 || (echo "ERROR: 'unzip' not found in PATH. Please install it."; exit 1)
 
-# Step 1a: Generate IP without simulation (default)
-ip: CSIM=0
-ip: IP/component.xml
+# Generate IP without simulation (default)
 
-# Step 1b: Generate IP with C simulation
-ip_sim: CSIM=1
-ip_sim: IP/component.xml
+ip: IP/component.xml
 
 # Vitis HLS exports the IP as a .zip archive inside ./IP.
 # The TCL script (midterm_vitis.tcl) runs unzip after export_design so that
 # Vivado can find component.xml directly under ./IP via ip_repo_paths.
 IP/component.xml: HLS/conv2d.cpp HLS/conv2d.h $(PROJECT_NAME)_vitis.tcl | check_tools
-	@echo "Running Vitis HLS... (CSIM=$(CSIM))"
+	@echo "Running Vitis HLS... "
 	rm -rf $(PROJECT_NAME)_vitis IP
 	mkdir -p IP
-	"$(VITIS_HLS_BIN)" -f $(PROJECT_NAME)_vitis.tcl -tclargs $(CSIM)
+	"$(VITIS_HLS_BIN)" -f $(PROJECT_NAME)_vitis.tcl -tclargs
 	@echo "Unzipping IP files..."
 	cd IP && unzip -o export.zip && cd ..
 	@test -f IP/component.xml || (echo "ERROR: IP/component.xml not found after Vitis HLS run. Check vitis_hls.log for errors."; exit 1)
